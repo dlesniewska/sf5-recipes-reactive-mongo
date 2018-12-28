@@ -32,8 +32,6 @@ public class IndexControllerTest {
     Model model;
     @Mock
     RecipeService recipeService;
-//    @Mock
-//    RecipeRepository recipeRepository;
 
     @Before
     public void setUp() throws Exception {

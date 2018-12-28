@@ -59,6 +59,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         guacamoleRecipe.setCookTime(0);
         guacamoleRecipe.setDifficulty(Difficulty.EASY);
         guacamoleRecipe.setServings(4);
+        guacamoleRecipe.setSource("SimplyRecipes");
         guacamoleRecipe.setUrl("https://www.simplyrecipes.com/recipes/perfect_guacamole/");
         guacamoleRecipe.addIngredient(new Ingredient("ripe avocados", new BigDecimal(2), units.get("Each")));
         guacamoleRecipe.addIngredient(new Ingredient("Kosher salt", new BigDecimal(.5), units.get("Teaspoon")));
@@ -106,6 +107,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         tacoRecipe.setCookTime(15);
         tacoRecipe.setDifficulty(Difficulty.MODERATE);
         tacoRecipe.setServings(6);
+        tacoRecipe.setSource("SimplyRecipes");
         tacoRecipe.setUrl("https://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/");
         tacoRecipe.addIngredient(new Ingredient("ancho chili powder", new BigDecimal(2), units.get("Tablespoon")));
         tacoRecipe.addIngredient(new Ingredient("dried oregano", new BigDecimal(1), units.get("Teaspoon")));
