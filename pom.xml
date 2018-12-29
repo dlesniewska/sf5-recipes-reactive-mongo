@@ -93,7 +93,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <!--surefire 2.22.1 with java8 bug -> forked JVM -> disableClassPathURLCheck-->
-                    <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
