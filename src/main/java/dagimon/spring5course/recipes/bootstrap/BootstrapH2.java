@@ -6,6 +6,7 @@ import dagimon.spring5course.recipes.repositories.RecipeRepository;
 import dagimon.spring5course.recipes.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,13 +17,14 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Component
-public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
+@Profile("default")
+public class BootstrapH2 implements ApplicationListener<ContextRefreshedEvent> {
 
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository uomRepository;
 
-    public RecipeBootstrap(CategoryRepository categoryRepository, RecipeRepository recipeRepository, UnitOfMeasureRepository uomRepository) {
+    public BootstrapH2(CategoryRepository categoryRepository, RecipeRepository recipeRepository, UnitOfMeasureRepository uomRepository) {
         this.categoryRepository = categoryRepository;
         this.recipeRepository = recipeRepository;
         this.uomRepository = uomRepository;
