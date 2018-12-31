@@ -1,5 +1,5 @@
-[![CircleCI](https://circleci.com/gh/dlesniewska/sf5-recipes-mysql.svg?style=svg)](https://circleci.com/gh/dlesniewska/sf5-recipes-mysql)
-[![codecov](https://codecov.io/gh/dlesniewska/sf5-recipes-mysql/branch/master/graph/badge.svg)](https://codecov.io/gh/dlesniewska/sf5-recipes-mysql)
+[![CircleCI](https://circleci.com/gh/dlesniewska/sf5-recipes-mongoDB.svg?style=svg)](https://circleci.com/gh/dlesniewska/sf5-recipes-mongoDB)
+[![codecov](https://codecov.io/gh/dlesniewska/sf5-recipes-mongoDB/branch/master/graph/badge.svg)](https://codecov.io/gh/dlesniewska/sf5-recipes-mongoDBmysql)
 
-# spring5-recipe-mysql
-Simple recipes app (my fork of sfg spring5 course) using h2 database. A base for later mysql and mongo versions of the app.
+# spring5-recipe-mongoDB
+Simple recipes app (my copy of sfg spring5 course) using mongoDB nosql database.
