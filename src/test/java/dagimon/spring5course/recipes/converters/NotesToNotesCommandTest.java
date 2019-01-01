@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class NotesToNotesCommandTest {
 
-    private final static Long OBJECT_ID = 1L;
+    private final static String OBJECT_ID = "1";
     private final static String OBJECT_DESC = "DESC";
 
     private NotesToNotesCommand converter;

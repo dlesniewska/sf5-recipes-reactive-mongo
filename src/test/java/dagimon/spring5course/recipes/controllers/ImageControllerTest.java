@@ -41,24 +41,25 @@ public class ImageControllerTest {
     public void showUploadImageFormshowUploadImageForm() throws Exception {
         //given
         RecipeCommand mockedRecipe = new RecipeCommand();
-        mockedRecipe.setId(1L);
-        when(recipeService.findCommandById(anyLong())).thenReturn(mockedRecipe);
+        mockedRecipe.setId("1");
+        when(recipeService.findCommandById(anyString())).thenReturn(mockedRecipe);
 
         mockMvc.perform(get("/recipe/1/image"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("recipe"))
                 .andExpect(view().name("recipe/imageUploadForm"));
-        verify(recipeService).findCommandById(anyLong());
+        verify(recipeService).findCommandById(anyString());
     }
 
     //rewrited as a controller advice global handling number format exception
-    @Test
-    public void testShowUploadImageFormNumberFormatException() throws Exception {
-        mockMvc.perform(get("/recipe/dupa/image"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("400error"))
-                .andExpect(model().attributeExists("exception"));
-    }
+    //no String -> long conversion for mongo since id is of type String anyway
+//    @Test
+//    public void testShowUploadImageFormNumberFormatException() throws Exception {
+//        mockMvc.perform(get("/recipe/dupa/image"))
+//                .andExpect(status().isBadRequest())
+//                .andExpect(view().name("400error"))
+//                .andExpect(model().attributeExists("exception"));
+//    }
 
     @Test
     public void handleImageUpload() throws Exception {
@@ -72,14 +73,14 @@ public class ImageControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/recipe/1/show"));
 
-        verify(imageService, times(1)).saveImageFile(anyLong(), any());
+        verify(imageService, times(1)).saveImageFile(anyString(), any());
     }
 
     @Test
     public void renderImageFromDB() throws Exception {
         //given
         RecipeCommand command = new RecipeCommand();
-        command.setId(1L);
+        command.setId("1");
         String s = "fake image text";
         Byte[] bytesBoxed = new Byte[s.getBytes().length];
         int i = 0;
@@ -87,7 +88,7 @@ public class ImageControllerTest {
             bytesBoxed[i++] = primByte;
         }
         command.setImage(bytesBoxed);
-        when(recipeService.findCommandById(anyLong())).thenReturn(command);
+        when(recipeService.findCommandById(anyString())).thenReturn(command);
 
         //when
         MockHttpServletResponse response = mockMvc.perform(get("/recipe/1/recipeImage"))

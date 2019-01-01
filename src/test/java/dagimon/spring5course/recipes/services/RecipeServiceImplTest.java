@@ -46,37 +46,37 @@ public class RecipeServiceImplTest {
         //checking goals
         assertEquals(1, recipeService.getRecipes().size());
         verify(recipeRepository, times(1)).findAll(); //check if findAll was called exactly 1 time
-        verify(recipeRepository, never()).findById(anyLong());
+        verify(recipeRepository, never()).findById(anyString());
     }
 
     @Test
     public void getRecipeByIdTest() {
-        Long mockedRecipeId = 1L;
+        String mockedRecipeId = "1";
 
         //mocking behaviour
         Recipe mockedRecipe = new Recipe();
         mockedRecipe.setId(mockedRecipeId);
         Optional<Recipe> mockedRecipeOptional = Optional.of(mockedRecipe);
-        when(recipeRepository.findById(anyLong())).thenReturn(mockedRecipeOptional);
+        when(recipeRepository.findById(anyString())).thenReturn(mockedRecipeOptional);
 
         //checking goals
         Recipe returnedRecipe = recipeService.findById(mockedRecipeId);
         assertEquals(mockedRecipeId, returnedRecipe.getId());
-        verify(recipeRepository).findById(anyLong());
+        verify(recipeRepository).findById(anyString());
         verify(recipeRepository, never()).findAll();
     }
 
     @Test(expected = NotFoundException.class)
     public void getRecipeByIdTestNotFound() throws Exception {
         Optional<Recipe> recipeOptional = Optional.empty();
-        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
-        recipeService.findById(1L);
+        when(recipeRepository.findById(anyString())).thenReturn(recipeOptional);
+        recipeService.findById("1");
         //should go kaboom
     }
 
     @Test
     public void testDeleteById() {
-        recipeService.deleteById(2L);
-        verify(recipeRepository).deleteById(anyLong());
+        recipeService.deleteById("2");
+        verify(recipeRepository).deleteById(anyString());
     }
 }

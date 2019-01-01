@@ -6,16 +6,10 @@ import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(exclude = {"recipe", "recipeNotes"})
-@Entity
 public class Notes {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @OneToOne(mappedBy = "notes")
+    private String id;
     private Recipe recipe;
-
-    @Lob
     private String recipeNotes;
 
     public Notes() {

@@ -40,9 +40,9 @@ public class RecipeControllerTest {
     public void testGetRecipe() throws Exception {
 
         Recipe mockedRecipe = new Recipe();
-        mockedRecipe.setId(1L);
+        mockedRecipe.setId("1");
 
-        when(recipeService.findById(anyLong())).thenReturn(mockedRecipe);
+        when(recipeService.findById(anyString())).thenReturn(mockedRecipe);
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(recipeController).build();
         mockMvc.perform(get("/recipe/1/show"))
@@ -53,7 +53,7 @@ public class RecipeControllerTest {
 
     @Test
     public void testGetRecipeNotFound() throws Exception {
-        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+        when(recipeService.findById(anyString())).thenThrow(NotFoundException.class);
         mockMvc.perform(get("/recipe/1/show"))
                 .andExpect(status().isNotFound())
                 .andExpect(view().name("404error"))
@@ -61,13 +61,14 @@ public class RecipeControllerTest {
     }
 
     //rewrited as a controller advice global handling number format exception
-    @Test
-    public void testGetRecipeNumberFormatException() throws Exception {
-        mockMvc.perform(get("/recipe/dupa/show"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("400error"))
-                .andExpect(model().attributeExists("exception"));
-    }
+    //no String -> long conversion for mongo since id is of type String anyway
+//    @Test
+//    public void testGetRecipeNumberFormatException() throws Exception {
+//        mockMvc.perform(get("/recipe/dupa/show"))
+//                .andExpect(status().isBadRequest())
+//                .andExpect(view().name("400error"))
+//                .andExpect(model().attributeExists("exception"));
+//    }
 
     /**
      * New recipe form prepare and display
@@ -89,7 +90,7 @@ public class RecipeControllerTest {
     @Test
     public void testPostNewRecipeForm() throws Exception {
         RecipeCommand command = new RecipeCommand();
-        command.setId(2L);
+        command.setId("2");
         when(recipeService.saveCommand(any())).thenReturn(command);
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -104,7 +105,7 @@ public class RecipeControllerTest {
     @Test
     public void testPostNewRecipeFormValidationFail() throws Exception {
         RecipeCommand command = new RecipeCommand();
-        command.setId(2L);
+        command.setId("2");
         when(recipeService.saveCommand(any())).thenReturn(command);
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -124,8 +125,8 @@ public class RecipeControllerTest {
     @Test
     public void testGetUpdateView() throws Exception {
         RecipeCommand command = new RecipeCommand();
-        command.setId(2L);
-        when(recipeService.findCommandById(anyLong())).thenReturn(command);
+        command.setId("2");
+        when(recipeService.findCommandById(anyString())).thenReturn(command);
 
         mockMvc.perform(get("/recipe/1/update"))
                 .andExpect(status().isOk())
@@ -138,7 +139,7 @@ public class RecipeControllerTest {
         mockMvc.perform(get("/recipe/1/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
-        verify(recipeService).deleteById(anyLong());
+        verify(recipeService).deleteById(anyString());
     }
 
     @Test

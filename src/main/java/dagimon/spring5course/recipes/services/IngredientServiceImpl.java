@@ -31,7 +31,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public IngredientCommand findCommandByRecipeIdAndId(Long recipeId, Long id) {
+    public IngredientCommand findCommandByRecipeIdAndId(String recipeId, String id) {
         Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeId);
         if (!optionalRecipe.isPresent()) {
             throw new RuntimeException("Recipe with given id not found");
@@ -93,7 +93,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public void deleteById(Long recipeId, Long id) {
+    public void deleteById(String recipeId, String id) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
         if (recipeOptional.isPresent()) {
             Recipe recipe = recipeOptional.get();

@@ -14,8 +14,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,13 +34,13 @@ public class ImageServiceImplTest {
     public void saveImageFile() throws IOException {
         //given
         Recipe mockedRecipe = new Recipe();
-        mockedRecipe.setId(1L);
+        mockedRecipe.setId("1");
         MultipartFile file = new MockMultipartFile("imagefile", "image.txt", "text/plain", "SOme sample text".getBytes());
-        when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(mockedRecipe));
+        when(recipeRepository.findById(anyString())).thenReturn(Optional.of(mockedRecipe));
         //when(recipeRepository.save(any(Recipe.class))).thenReturn(mockedRecipe); //default is null, don't need that line actually
 
         //when
-        imageService.saveImageFile(1L, file);
+        imageService.saveImageFile("1", file);
 
         //then
         ArgumentCaptor<Recipe> captorRecipe = ArgumentCaptor.forClass(Recipe.class);
