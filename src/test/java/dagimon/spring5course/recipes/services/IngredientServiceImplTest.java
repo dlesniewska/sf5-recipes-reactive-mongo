@@ -100,7 +100,6 @@ public class IngredientServiceImplTest {
         recipe.setId("1");
         Ingredient ingredient = new Ingredient();
         ingredient.setId("3");
-        ingredient.setRecipe(recipe);
         recipe.addIngredient(ingredient);
         Optional<Recipe> recipeOptional = Optional.of(recipe);
         when(recipeRepository.findById(anyString())).thenReturn(recipeOptional);
