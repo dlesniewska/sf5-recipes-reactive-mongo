@@ -3,19 +3,19 @@ package dagimon.spring5course.recipes.bootstrap;
 import dagimon.spring5course.recipes.domain.*;
 import dagimon.spring5course.recipes.repositories.CategoryRepository;
 import dagimon.spring5course.recipes.repositories.RecipeRepository;
-import dagimon.spring5course.recipes.repositories.UnitOfMeasureReactiveRepository;
+import dagimon.spring5course.recipes.repositories.reactive.CategoryReactiveRepository;
+import dagimon.spring5course.recipes.repositories.reactive.RecipeReactiveRepository;
+import dagimon.spring5course.recipes.repositories.reactive.UnitOfMeasureReactiveRepository;
 import dagimon.spring5course.recipes.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -24,9 +24,6 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
-
-    @Autowired
-    UnitOfMeasureReactiveRepository reactiveRepository;
 
     public RecipeBootstrap(CategoryRepository categoryRepository,
                            RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
@@ -42,9 +39,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         loadUom();
         recipeRepository.saveAll(getRecipes());
         log.debug("Loading Bootstrap Data");
-
-        log.error("\r\n Count [reactive test]: " + reactiveRepository.count().block().toString());
-    }
+}
 
     private void loadCategories(){
         Category cat1 = new Category();

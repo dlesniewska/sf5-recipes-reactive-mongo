@@ -2,17 +2,19 @@ package dagimon.spring5course.recipes.services;
 
 import dagimon.spring5course.recipes.commands.RecipeCommand;
 import dagimon.spring5course.recipes.domain.Recipe;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
 public interface RecipeService {
-    Set<Recipe> getRecipes();
+    Flux<Recipe> getRecipes();
 
-    Recipe findById(String recipeId);
+    Mono<Recipe> findById(String recipeId);
 
-    RecipeCommand saveCommand(RecipeCommand command);
+    Mono<RecipeCommand> saveCommand(RecipeCommand command);
 
-    RecipeCommand findCommandById(String id);
+    Mono<RecipeCommand> findCommandById(String id);
 
-    void deleteById(String id);
+    Mono<Void> deleteById(String id);
 }

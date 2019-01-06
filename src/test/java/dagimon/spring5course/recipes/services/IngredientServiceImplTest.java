@@ -1,6 +1,7 @@
 package dagimon.spring5course.recipes.services;
 
 import dagimon.spring5course.recipes.commands.IngredientCommand;
+import dagimon.spring5course.recipes.commands.UnitOfMeasureCommand;
 import dagimon.spring5course.recipes.converters.IngredientCommandToIngredient;
 import dagimon.spring5course.recipes.converters.IngredientToIngredientCommand;
 import dagimon.spring5course.recipes.converters.UnitOfMeasureCommandToUnitOfMeasure;
@@ -9,10 +10,13 @@ import dagimon.spring5course.recipes.domain.Ingredient;
 import dagimon.spring5course.recipes.domain.Recipe;
 import dagimon.spring5course.recipes.repositories.RecipeRepository;
 import dagimon.spring5course.recipes.repositories.UnitOfMeasureRepository;
+import dagimon.spring5course.recipes.repositories.reactive.RecipeReactiveRepository;
+import dagimon.spring5course.recipes.repositories.reactive.UnitOfMeasureReactiveRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -25,12 +29,13 @@ public class IngredientServiceImplTest {
 
     //testing
     IngredientService ingredientService;
-    UnitOfMeasureRepository uomRepository;
     IngredientCommandToIngredient ingredientCommandToIngredientConverter;
     IngredientToIngredientCommand ingredientToIngredientCommandConverter;
     //mocking
     @Mock
-    RecipeRepository recipeRepository;
+    RecipeReactiveRepository recipeRepository;
+    @Mock
+    UnitOfMeasureReactiveRepository uomRepository;
 
     //init converters once (not per test)
     public IngredientServiceImplTest() {
@@ -58,13 +63,12 @@ public class IngredientServiceImplTest {
         recipe.addIngredient(ingredient1);
         recipe.addIngredient(ingredient2);
         recipe.addIngredient(ingredient3);
-        Optional<Recipe> optionalRecipe = Optional.of(recipe);
 
         //when
-        when(recipeRepository.findById(anyString())).thenReturn(optionalRecipe);
+        when(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe));
 
         //then
-        IngredientCommand ingredientCommand = ingredientService.findCommandByRecipeIdAndId("1", "3");
+        IngredientCommand ingredientCommand = ingredientService.findCommandByRecipeIdAndId("1", "3").block();
         assertNotNull(ingredientCommand);
         assertEquals("1", ingredientCommand.getRecipeId());
         assertEquals("3", ingredientCommand.getId());
@@ -77,15 +81,17 @@ public class IngredientServiceImplTest {
         IngredientCommand command = new IngredientCommand();
         command.setId("3");
         command.setRecipeId("2");
-        Optional<Recipe> recipeOptional = Optional.of(new Recipe());
+        command.setUom(new UnitOfMeasureCommand());
+        command.getUom().setId("1234");
+
         Recipe savedRecipe = new Recipe();
         savedRecipe.addIngredient(new Ingredient());
         savedRecipe.getIngredients().iterator().next().setId("3");
-        when(recipeRepository.findById(anyString())).thenReturn(recipeOptional);
-        when(recipeRepository.save(any())).thenReturn(savedRecipe);
+        when(recipeRepository.findById(anyString())).thenReturn(Mono.just(new Recipe()));
+        when(recipeRepository.save(any())).thenReturn(Mono.just(savedRecipe));
 
         //when
-        IngredientCommand savedCommand = ingredientService.saveIngredientCommand(command);
+        IngredientCommand savedCommand = ingredientService.saveIngredientCommand(command).block();
 
         //then
         assertEquals("3", savedCommand.getId());
@@ -101,8 +107,8 @@ public class IngredientServiceImplTest {
         Ingredient ingredient = new Ingredient();
         ingredient.setId("3");
         recipe.addIngredient(ingredient);
-        Optional<Recipe> recipeOptional = Optional.of(recipe);
-        when(recipeRepository.findById(anyString())).thenReturn(recipeOptional);
+        when(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe));
+        when(recipeRepository.save(any())).thenReturn(Mono.just(recipe));
 
         //when
         ingredientService.deleteById("1", "3");

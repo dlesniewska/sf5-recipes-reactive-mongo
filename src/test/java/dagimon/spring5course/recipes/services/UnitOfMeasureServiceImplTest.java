@@ -4,12 +4,15 @@ import dagimon.spring5course.recipes.commands.UnitOfMeasureCommand;
 import dagimon.spring5course.recipes.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import dagimon.spring5course.recipes.domain.UnitOfMeasure;
 import dagimon.spring5course.recipes.repositories.UnitOfMeasureRepository;
+import dagimon.spring5course.recipes.repositories.reactive.UnitOfMeasureReactiveRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Flux;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -22,7 +25,7 @@ public class UnitOfMeasureServiceImplTest {
     UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommandConverter = new UnitOfMeasureToUnitOfMeasureCommand();
 
     @Mock
-    UnitOfMeasureRepository uomRepository;
+    UnitOfMeasureReactiveRepository uomRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -42,10 +45,10 @@ public class UnitOfMeasureServiceImplTest {
         unitOfMeasures.add(uom2);
 
         //when
-        when(uomRepository.findAll()).thenReturn(unitOfMeasures);
+        when(uomRepository.findAll()).thenReturn(Flux.just(uom1, uom2));
 
         //then
-        Set<UnitOfMeasureCommand> foundCommands = uomService.listAllCommands();
+        List<UnitOfMeasureCommand> foundCommands = uomService.listAllCommands().collectList().block();
         assertEquals(2, foundCommands.size());
         verify(uomRepository).findAll();
     }

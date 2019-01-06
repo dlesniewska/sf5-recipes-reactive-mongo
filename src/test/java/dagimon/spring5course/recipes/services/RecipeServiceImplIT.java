@@ -32,7 +32,6 @@ public class RecipeServiceImplIT {
     @Autowired
     RecipeToRecipeCommand recipeToRecipeCommand;
 
-    @Transactional
     @Test
     public void testSaveOfDescription() throws Exception {
         //given
@@ -42,7 +41,7 @@ public class RecipeServiceImplIT {
 
         //when
         testRecipeCommand.setDescription(NEW_DESCRIPTION);
-        RecipeCommand savedRecipeCommand = recipeService.saveCommand(testRecipeCommand);
+        RecipeCommand savedRecipeCommand = recipeService.saveCommand(testRecipeCommand).block();
 
         //then
         assertEquals(NEW_DESCRIPTION, savedRecipeCommand.getDescription());

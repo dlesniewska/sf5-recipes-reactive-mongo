@@ -2,7 +2,6 @@ package dagimon.spring5course.recipes.domain;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
@@ -22,13 +21,10 @@ public class Recipe {
     private String source;
     private String url;
     private String directions;
-    //@DBRef
     private Set<Ingredient> ingredients = new HashSet<>();
-    @DBRef
     private Set<Category> category = new HashSet<>();
     private Difficulty difficulty;
     private Byte[] image;
-    //@DBRef
     private Notes notes = new Notes();
 
     public void setNotes(Notes notes) {

@@ -16,8 +16,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
+import reactor.core.publisher.Flux;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -50,8 +52,8 @@ public class IndexControllerTest {
         recipe = new Recipe();
         recipe.setId("2");
         recipes.add(recipe);
-        when(recipeService.getRecipes()).thenReturn(recipes);
-        ArgumentCaptor<Set<Recipe>> argumentCaptor = ArgumentCaptor.forClass(Set.class); //checking result type captor
+        when(recipeService.getRecipes()).thenReturn(Flux.fromIterable(recipes));
+        ArgumentCaptor<List<Recipe>> argumentCaptor = ArgumentCaptor.forClass(List.class); //checking result type captor
 
         //when (actuall call)
         String redirectPage = indexController.getIndexPage(model);
@@ -60,7 +62,7 @@ public class IndexControllerTest {
         assertEquals("index", redirectPage);
 
         verify(model, times(1)).addAttribute(eq("recipes"), argumentCaptor.capture()); //times checking & set argument
-        Set<Recipe> argumentCaptorSet = argumentCaptor.getValue();
+        List<Recipe> argumentCaptorSet = argumentCaptor.getValue();
         assertEquals(2, argumentCaptorSet.size());
 
         verify(recipeService, times(2)).getRecipes();
@@ -70,6 +72,7 @@ public class IndexControllerTest {
     public void testMockMvc() throws Exception {
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(indexController).build();
+        when(recipeService.getRecipes()).thenReturn(Flux.empty());
         mockMvc.perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("index"));

@@ -2,6 +2,7 @@ package dagimon.spring5course.recipes.services;
 
 import dagimon.spring5course.recipes.domain.Recipe;
 import dagimon.spring5course.recipes.repositories.RecipeRepository;
+import dagimon.spring5course.recipes.repositories.reactive.RecipeReactiveRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -22,7 +24,7 @@ public class ImageServiceImplTest {
 
     ImageService imageService;
     @Mock
-    RecipeRepository recipeRepository;
+    RecipeReactiveRepository recipeRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -36,7 +38,8 @@ public class ImageServiceImplTest {
         Recipe mockedRecipe = new Recipe();
         mockedRecipe.setId("1");
         MultipartFile file = new MockMultipartFile("imagefile", "image.txt", "text/plain", "SOme sample text".getBytes());
-        when(recipeRepository.findById(anyString())).thenReturn(Optional.of(mockedRecipe));
+        when(recipeRepository.findById(anyString())).thenReturn(Mono.just(mockedRecipe));
+        when(recipeRepository.save(any(Recipe.class))).thenReturn(Mono.just(mockedRecipe));
         //when(recipeRepository.save(any(Recipe.class))).thenReturn(mockedRecipe); //default is null, don't need that line actually
 
         //when

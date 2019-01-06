@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Mono;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,7 +43,7 @@ public class RecipeControllerTest {
         Recipe mockedRecipe = new Recipe();
         mockedRecipe.setId("1");
 
-        when(recipeService.findById(anyString())).thenReturn(mockedRecipe);
+        when(recipeService.findById(anyString())).thenReturn(Mono.just(mockedRecipe));
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(recipeController).build();
         mockMvc.perform(get("/recipe/1/show"))
@@ -91,7 +92,7 @@ public class RecipeControllerTest {
     public void testPostNewRecipeForm() throws Exception {
         RecipeCommand command = new RecipeCommand();
         command.setId("2");
-        when(recipeService.saveCommand(any())).thenReturn(command);
+        when(recipeService.saveCommand(any())).thenReturn(Mono.just(command));
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "")
@@ -106,7 +107,7 @@ public class RecipeControllerTest {
     public void testPostNewRecipeFormValidationFail() throws Exception {
         RecipeCommand command = new RecipeCommand();
         command.setId("2");
-        when(recipeService.saveCommand(any())).thenReturn(command);
+        when(recipeService.saveCommand(any())).thenReturn(Mono.just(command));
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "")
@@ -126,7 +127,7 @@ public class RecipeControllerTest {
     public void testGetUpdateView() throws Exception {
         RecipeCommand command = new RecipeCommand();
         command.setId("2");
-        when(recipeService.findCommandById(anyString())).thenReturn(command);
+        when(recipeService.findCommandById(anyString())).thenReturn(Mono.just(command));
 
         mockMvc.perform(get("/recipe/1/update"))
                 .andExpect(status().isOk())
