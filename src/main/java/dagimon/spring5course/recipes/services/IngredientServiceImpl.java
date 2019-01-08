@@ -47,38 +47,44 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    @Transactional
     public Mono<IngredientCommand> saveIngredientCommand(IngredientCommand command) {
         Recipe recipe = recipeRepository.findById(command.getRecipeId()).block();
+
         if (recipe == null) {
+
             //todo toss error if not found!
             log.error("Recipe not found for id: " + command.getRecipeId());
             return Mono.just(new IngredientCommand());
         } else {
+
             Optional<Ingredient> ingredientOptional = recipe
                     .getIngredients()
                     .stream()
                     .filter(ingredient -> ingredient.getId().equals(command.getId()))
                     .findFirst();
+
             if (ingredientOptional.isPresent()) {
                 Ingredient ingredientFound = ingredientOptional.get();
                 ingredientFound.setDescription(command.getDescription());
                 ingredientFound.setAmount(command.getAmount());
                 ingredientFound.setUom(uomRepository
                         .findById(command.getUom().getId()).block());
-                       // .orElseThrow(() -> new RuntimeException("UOM NOT FOUND"))); //todo address this
-                if (ingredientFound.getUom() == null){
+
+                if (ingredientFound.getUom() == null) {
                     new RuntimeException("UOM NOT FOUND");
                 }
             } else {
                 //add new Ingredient
-                recipe.addIngredient(ingredientCommandToIngredient.convert(command));
+                Ingredient ingredient = ingredientCommandToIngredient.convert(command);
+                recipe.addIngredient(ingredient);
             }
+
             Recipe savedRecipe = recipeRepository.save(recipe).block();
-            //to do check for fail
+
             Optional<Ingredient> savedIngredientOptional = savedRecipe.getIngredients().stream()
                     .filter(recipeIngredients -> recipeIngredients.getId().equals(command.getId()))
                     .findFirst();
+
             //check by description
             if (!savedIngredientOptional.isPresent()) {
                 //not totally safe... But best guess
@@ -88,9 +94,16 @@ public class IngredientServiceImpl implements IngredientService {
                         .filter(recipeIngredients -> recipeIngredients.getUom().getId().equals(command.getUom().getId()))
                         .findFirst();
             }
-            //to do check for fail
-            return Mono.just(ingredientToIngredientCommand.convert(savedIngredientOptional.get()));
+
+            //todo check for fail
+
+            //enhance with id value
+            IngredientCommand ingredientCommandSaved = ingredientToIngredientCommand.convert(savedIngredientOptional.get());
+            ingredientCommandSaved.setRecipeId(recipe.getId());
+
+            return Mono.just(ingredientCommandSaved);
         }
+
     }
 
     @Override

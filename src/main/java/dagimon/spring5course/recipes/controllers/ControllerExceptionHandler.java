@@ -2,10 +2,12 @@ package dagimon.spring5course.recipes.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.support.WebExchangeBindException;
+
 
 @Slf4j
 @ControllerAdvice
@@ -13,15 +15,13 @@ public class ControllerExceptionHandler {
 
     //global nfe handling
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NumberFormatException.class)
-    public ModelAndView handleNumberFormatException(Exception ex){
-        log.error("Handling number format exception");
+    @ExceptionHandler(WebExchangeBindException.class) //for type mismatches within framework prevalidation fail
+    public String handleNumberFormatException(Exception ex, Model model) {
+        log.error("Handling binding exception");
         log.error("Exception is: " + ex.getMessage());
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("400error");
-        modelAndView.addObject("exception", ex);
+        model.addAttribute("exception", ex);
 
-        return modelAndView;
+        return "400error";
     }
 }
